@@ -1,0 +1,13 @@
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+h1 {
+    font-weight: 400;
+}
+
+#cy {
+    width: 600px;
+    height: 500px;
+    margin: 0 auto;
+}
