@@ -16,31 +16,15 @@
         'y', 'z'
     ];
 
-    function generateGraph(numberOfNodes) {
-        // TODO
-    }
-
-    // ugly hack
+    // ugly way of doing this
     function generateExampleGraph() {
         var elements = [];
-        elements.push({ 
-            data: { id: 'a' }
-        });
-        elements.push({ 
-            data: { id: 'b' }
-        });
-        elements.push({ 
-            data: { id: 'c' }
-        });
-        elements.push({ 
-            data: { id: 'd' }
-        });
-        elements.push({ 
-            data: { id: 'e' }
-        });
-        elements.push({ 
-            data: { id: 'f' }
-        });
+        elements.push({ data: { id: 'a' } });
+        elements.push({ data: { id: 'b' } });
+        elements.push({ data: { id: 'c' } });
+        elements.push({ data: { id: 'd' } });
+        elements.push({ data: { id: 'e' } });
+        elements.push({ data: { id: 'f' } });
         elements.push({
             data: { 
                 id: 'ab',
@@ -117,7 +101,7 @@
             });
         }
         // random number from |V| to 2|V|
-        var randomNumberOfEdges = Math.floor(Math.random() * (random * 3) + random);
+        var randomNumberOfEdges = Math.floor(Math.random() * (random * 4) + (random * 1.5));
         var edgesAdded = 0;
         for (var i = 0; i < randomNumberOfEdges; i++) {
             // get a random node from the elements array and subtract 'i' because
