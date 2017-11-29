@@ -57,9 +57,9 @@
         } else if ( weight >= 20 && weight < 30) {
             color ='#c2d6f4';
         } else if ( weight >= 10 && weight < 20) {
-            color ='#d6e4f8';
+            color = '#aac6ef';
         } else {
-            color = '#eaf1fb';
+            color = '#d6e4f8';
         }
         return color;
     }
