@@ -1,11 +1,6 @@
 /**
- * Couple of ideas:
- * So I am pretty sure that this library doesn't allow you to
- * display the weight of edges attached to the edges themselves.
- * Because of this I could maybe represent the edges with weights
- * In different colors (i.e. sets of 10s/20s/25s red = greater weight green = better idk)
- *
- * Also we have to be able to select the two nodes we want to find the shortest path to.
+ * Idea(s):
+ * We have to be able to select the two nodes we want to find the shortest path to.
  * Look into click events for cytoscape, there isn't too much material in the docs so
  * it looks like this will be somewhat easy to implement
  * Quick example of adding clicked cytoscape elements to a collection
@@ -36,6 +31,52 @@
         's', 't', 'u', 'v', 'w', 'x', 
         'y', 'z'
     ];
+
+    /** 
+     * Calculate edge color based on weight
+     * Colors are tints of node color:
+     * http://www.color-hex.com/color/3579dc
+     * @param {number} weight of edge
+     */
+    function edgeColor(weight) {
+        var color = '';
+        if (weight >= 90 && weight <= 100) {
+            color = '#3579dc';
+        } else if (weight >= 80 && weight < 90) {
+            color = '#4986df';
+        } else if ( weight >= 70 && weight < 80) {
+            color ='#5d93e3';
+        } else if ( weight >= 60 && weight < 70) {
+            color ='#71a1e6';
+        } else if ( weight >= 50 && weight < 60) {
+            color ='#85aeea';
+        } else if ( weight >= 40 && weight < 50) {
+            color ='#9abced';
+        } else if ( weight >= 30 && weight < 40) {
+            color ='#aec9f1';
+        } else if ( weight >= 20 && weight < 30) {
+            color ='#c2d6f4';
+        } else if ( weight >= 10 && weight < 20) {
+            color ='#d6e4f8';
+        } else {
+            color = '#eaf1fb';
+        }
+        return color;
+    }
+
+    function addColorWeights() {
+        var edges = [];
+        var nodes = [];
+        // seperate edges & nodes into organized arrays
+        getEdgesAndNodes(graph, edges, nodes);
+        for (var i = 0; i < edges.length; i++) {
+           var id = edges[i].data.id;
+           var weight = edges[i].data.weight;
+           cy.getElementById(id).style({
+               'line-color': edgeColor(weight)
+           });
+        }
+    }
 
     // ugly way of doing this
     function generateExampleGraph() {
@@ -299,7 +340,8 @@
             {
                 selector: 'node',
                 style: {
-                    'background-color': '#666',
+                    //'background-color': '#666',
+                    'background-color': '#3579DC',
                     'label': 'data(id)'
                 }
             },
@@ -309,7 +351,8 @@
                     'width': 3,
                     'line-color': '#ccc',
                     'target-arrow-color': '#ccc',
-                    'target-arrow-shape': 'triangle'
+                    'target-arrow-shape': 'triangle',
+                    'label': 'data(weight)'
                 }
             }
         ],
@@ -318,6 +361,8 @@
             rows: 1
         }
     });
+
+    addColorWeights();
 
     setTimeout(function() {
         // look into changing colors of visited nodes
@@ -334,4 +379,5 @@
     layout.run();
 
     //cy.getElementById('b').style(visitedNode);
+
 })();
