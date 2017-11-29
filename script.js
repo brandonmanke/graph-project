@@ -242,6 +242,7 @@
         getEdgesAndNodes(graph, edges, nodes);
 
         var currentNode = startingNode;
+        cy.getElementById(currentNode).style(visitedNode);
         while ((currentNode !== endingNode) && currentNode) {
             console.log('\nCurrent node is ' + currentNode);
             var currentNeighbors = [];
@@ -303,18 +304,24 @@
             // check if we are traveling from target to source OR
             // from source to target
             if (edgeToPick.source === currentNode) {
+                //cy.getElementById(edgeToPick.source).style(visitedNode);
+                cy.getElementById(edgeToPick.id).style(visitedEdge);
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.source);
                 currentNode = edgeToPick.target;
+                cy.getElementById(currentNode).style(visitedNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.source + 
                             ' to ' + edgeToPick.target + 
                             ' with cost of ' + edgeToPick.weight);
             } else {
+                //cy.getElementById(edgeToPick.target).style(visitedNode); // may need to flip
+                cy.getElementById(edgeToPick.id).style(visitedEdge);
                 // must be target to source
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.target);
                 currentNode = edgeToPick.source;
+                cy.getElementById(currentNode).style(visitedNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.target + 
                             ' to ' + edgeToPick.source + 
