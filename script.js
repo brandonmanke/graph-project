@@ -1,3 +1,24 @@
+/**
+ * Couple of ideas:
+ * So I am pretty sure that this library doesn't allow you to
+ * display the weight of edges attached to the edges themselves.
+ * Because of this I could maybe represent the edges with weights
+ * In different colors (i.e. sets of 10s/20s/25s red = greater weight green = better idk)
+ *
+ * Also we have to be able to select the two nodes we want to find the shortest path to.
+ * Look into click events for cytoscape, there isn't too much material in the docs so
+ * it looks like this will be somewhat easy to implement
+ * Quick example of adding clicked cytoscape elements to a collection
+ *  Keep a collection of nodes that have been clicked:
+ * ```
+ *
+ *  var collection = cy.collection();
+ *  cy.nodes().on("click", function(){
+ *    collection = collection.add(this);
+ *  });
+ *
+ * ```
+ */
 (function() {
 
     var visitedEdge = {
@@ -117,7 +138,6 @@
                    (randomLetter === randomLetter2)) {
                 randomLetter = Math.floor((Math.random() * elements.length) - edgesAdded);
                 randomLetter2 = Math.floor((Math.random() * elements.length) - edgesAdded);
-
             }
             var weight = Math.floor((Math.random() * 100) + 1);
             var node1 = alphabet[randomLetter];
@@ -299,8 +319,9 @@
         }
     });
 
-    // works sometimes, less with larger graphs
     setTimeout(function() {
+        // look into changing colors of visited nodes
+        // and edges
         nearestNeighborAlgorithm('a', 'd');
     }, 2000);
 
@@ -312,7 +333,5 @@
 
     layout.run();
 
-
     //cy.getElementById('b').style(visitedNode);
-
 })();
