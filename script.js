@@ -15,15 +15,6 @@
  * ```
  */
 (function() {
-
-    var visitedEdge = {
-        'line-color': 'red'
-    };
-
-    var visitedNode = {
-        'background-color': 'red'
-    };
-
     var alphabet = [
         'a', 'b', 'c', 'd', 'e', 'f', 
         'g', 'h', 'i', 'j', 'k', 'l', 
@@ -231,18 +222,75 @@
         }
     }
 
+    function filterVisited(currentNeighbors, processedVertices, processedEdges) {
+        if ((processedEdges.length > 0 && currentNeighbors.length > 0)||
+            (processedVertices.length > 0 && currentNeighbors.length > 0)) {
+            // we remove edges to vertices we have already processed
+            for (var i = 0; i < currentNeighbors.length; i++) {
+                for (var j = 0; j < processedEdges.length; j++) {
+                    if (currentNeighbors[i]) {
+                        // check if we have used this edge already
+                        if (currentNeighbors[i].data.id === processedEdges[j]) {
+                            var index = i;
+                            currentNeighbors.splice(index, 1);
+                        }
+                    }
+                }
+                for (var j = 0; j < processedVertices.length; j++) {
+                    if (currentNeighbors[i]) {
+                        // check if we have visited this vertice already
+                        if ((currentNeighbors[i].data.source === processedVertices[j]) ||
+                            (currentNeighbors[i].data.target === processedVertices[j])) {
+                            var index = i;
+                            currentNeighbors.splice(index, 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function pickShortestEdge(currentNeighbors) {
+        var edgeToPick = {};
+        if (currentNeighbors.length > 1) {
+            edgeToPick = currentNeighbors[0].data;
+            // for the current neighbors pick the one with the shortest weight
+            for (var i = 0; i < currentNeighbors.length; i++) {
+                if (edgeToPick.weight > currentNeighbors[i].data.weight) {
+                    edgeToPick = currentNeighbors[i].data;
+                }
+            }
+            console.log('Edge to pick', edgeToPick);
+        } else {
+            // no edges on current node
+            if (currentNeighbors.length === 0) {
+                // consider back tracking to previous node
+                console.log('Error there is no connected path to that vertex')
+                return -1;
+            }
+            // case where current node only has 1 edge
+            edgeToPick = currentNeighbors[0].data;
+        }
+        return edgeToPick;
+    }
+
+    function highlight(element) {
+        setTimeout(function() {
+            cy.getElementById(element).addClass('visited');
+        }, 500);
+    }
+
     function nearestNeighborAlgorithm(startingNode, endingNode) {
         var distanceTraveled = 0;
         var processedEdges = [];
         var processedVertices = [];
-
         var edges = [];
         var nodes = [];
+
         // seperate edges & nodes into organized arrays
         getEdgesAndNodes(graph, edges, nodes);
-
         var currentNode = startingNode;
-        cy.getElementById(currentNode).style(visitedNode);
+        cy.getElementById(currentNode).addClass('visited');
         while ((currentNode !== endingNode) && currentNode) {
             console.log('\nCurrent node is ' + currentNode);
             var currentNeighbors = [];
@@ -253,80 +301,40 @@
                 }
             }
 
-            if ((processedEdges.length > 0 && currentNeighbors.length > 0)||
-                (processedVertices.length > 0 && currentNeighbors.length > 0)) {
-                // we remove edges to vertices we have already processed
-                for (var i = 0; i < currentNeighbors.length; i++) {
-                    for (var j = 0; j < processedEdges.length; j++) {
-                        if (currentNeighbors[i]) {
-                            // check if we have used this edge already
-                            if (currentNeighbors[i].data.id === processedEdges[j]) {
-                                var index = i;
-                                currentNeighbors.splice(index, 1);
-                            }
-                        }
-                    }
-                    for (var j = 0; j < processedVertices.length; j++) {
-                        if (currentNeighbors[i]) {
-                            // check if we have visited this vertice already
-                            if ((currentNeighbors[i].data.source === processedVertices[j]) ||
-                                (currentNeighbors[i].data.target === processedVertices[j])) {
-                                var index = i;
-                                currentNeighbors.splice(index, 1);
-                            }
-                        }
-                    }
-                }
+            filterVisited(currentNeighbors, processedVertices, processedVertices);
+            var edgeToPick = pickShortestEdge(currentNeighbors);
+            if (edgeToPick === -1) {
+                break;
             }
-
-            var edgeToPick = {};
-            if (currentNeighbors.length > 1) {
-                edgeToPick = currentNeighbors[0].data;
-                // for the current neighbors pick the one with the shortest weight
-                for (var i = 0; i < currentNeighbors.length; i++) {
-                    if (edgeToPick.weight > currentNeighbors[i].data.weight) {
-                        edgeToPick = currentNeighbors[i].data;
-                    }
-                }
-                console.log('Edge to pick', edgeToPick);
-            } else {
-                // no edges on current node
-                if (currentNeighbors.length === 0) {
-                    // consider back tracking to previous node
-                    console.log('Error there is no connected path to that vertex')
-                    break;
-                }
-                // case where current node only has 1 edge
-                edgeToPick = currentNeighbors[0].data;
-            }
-
 
             // check if we are traveling from target to source OR
             // from source to target
             if (edgeToPick.source === currentNode) {
-                //cy.getElementById(edgeToPick.source).style(visitedNode);
-                cy.getElementById(edgeToPick.id).style(visitedEdge);
+                //cy.getElementById(edgeToPick.id).addClass('visited');
+                highlight(edgeToPick.id);
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.source);
                 currentNode = edgeToPick.target;
-                cy.getElementById(currentNode).style(visitedNode);
+                //cy.getElementById(currentNode).addClass('visited');
+                highlight(currentNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.source + 
                             ' to ' + edgeToPick.target + 
                             ' with cost of ' + edgeToPick.weight);
             } else {
-                //cy.getElementById(edgeToPick.target).style(visitedNode); // may need to flip
-                cy.getElementById(edgeToPick.id).style(visitedEdge);
+                //cy.getElementById(edgeToPick.id).addClass('visited');
+                highlight(edgeToPick.id);
                 // must be target to source
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.target);
                 currentNode = edgeToPick.source;
-                cy.getElementById(currentNode).style(visitedNode);
+                //cy.getElementById(currentNode).addClass('visited');
+                highlight(currentNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.target + 
                             ' to ' + edgeToPick.source + 
                             ' with cost of ' + edgeToPick.weight);
-            }
+            }            
             distanceTraveled += edgeToPick.weight;
 
             if (currentNode === endingNode) {
@@ -334,9 +342,6 @@
                 console.log('Ending node:', currentNode, '| Distance Traveled:', distanceTraveled);
                 break;
             }
-            // just in case
-            if (distanceTraveled > 1000)
-                break;
         }
     }
 
@@ -349,6 +354,9 @@
                 style: {
                     //'background-color': '#666',
                     'background-color': '#3579DC',
+                    // TODO styling for labels (both node & edge)
+                    'text-halign': 'center',
+                    'text-valign': 'center',
                     'label': 'data(id)'
                 }
             },
@@ -360,6 +368,16 @@
                     'target-arrow-color': '#ccc',
                     'target-arrow-shape': 'triangle',
                     'label': 'data(weight)'
+                }
+            },
+            {
+                selector: '.visited',
+                style: {
+                    'background-color': 'red',
+                    'line-color': 'red',
+                    'transition-property': 'background-color, line-color',
+                    'transition-delay': '1000ms',
+                    'transition-duration': '0.5s'
                 }
             }
         ],
@@ -375,7 +393,7 @@
         // look into changing colors of visited nodes
         // and edges
         nearestNeighborAlgorithm('a', 'd');
-    }, 2000);
+    }, 1000);
 
     //console.log(graph);
 
