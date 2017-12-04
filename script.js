@@ -276,8 +276,8 @@
 
     function highlight(element) {
         setTimeout(function() {
-            cy.getElementById(element).addClass('visited');
-        }, 500);
+            cy.getElementById(element).addClass('visited').update();
+        }, 1000);
     }
 
     function nearestNeighborAlgorithm(startingNode, endingNode) {
