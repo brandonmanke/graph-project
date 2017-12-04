@@ -265,7 +265,9 @@
             // no edges on current node
             if (currentNeighbors.length === 0) {
                 // consider back tracking to previous node
-                console.log('Error there is no connected path to that vertex')
+                var errMsg = 'Error there is no connected path to that vertex';
+                console.log(errMsg)
+                document.getElementById('path-text').innerHTML = errMsg;
                 return -1;
             }
             // case where current node only has 1 edge
@@ -274,10 +276,14 @@
         return edgeToPick;
     }
 
-    function highlight(element) {
+    /** 
+     * @param {string} element id of element we want to highlight
+     * @param {number} index multiplier to deal with javascript closures
+     */
+    function highlight(element, index) {
         setTimeout(function() {
-            cy.getElementById(element).addClass('visited').update();
-        }, 1000);
+            cy.getElementById(element).addClass('visited');
+        }, 1000 * index);
     }
 
     function nearestNeighborAlgorithm(startingNode, endingNode) {
@@ -290,7 +296,7 @@
         // seperate edges & nodes into organized arrays
         getEdgesAndNodes(graph, edges, nodes);
         var currentNode = startingNode;
-        cy.getElementById(currentNode).addClass('visited');
+        //cy.getElementById(currentNode).addClass('visited');
         while ((currentNode !== endingNode) && currentNode) {
             console.log('\nCurrent node is ' + currentNode);
             var currentNeighbors = [];
@@ -304,32 +310,27 @@
             filterVisited(currentNeighbors, processedVertices, processedVertices);
             var edgeToPick = pickShortestEdge(currentNeighbors);
             if (edgeToPick === -1) {
+                // even though this means we can't find the edge we still 
+                // want to highlight this node.
+                //processedVertices.push(currentNode);
                 break;
             }
 
             // check if we are traveling from target to source OR
             // from source to target
             if (edgeToPick.source === currentNode) {
-                //cy.getElementById(edgeToPick.id).addClass('visited');
-                highlight(edgeToPick.id);
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.source);
                 currentNode = edgeToPick.target;
-                //cy.getElementById(currentNode).addClass('visited');
-                highlight(currentNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.source + 
                             ' to ' + edgeToPick.target + 
                             ' with cost of ' + edgeToPick.weight);
             } else {
-                //cy.getElementById(edgeToPick.id).addClass('visited');
-                highlight(edgeToPick.id);
                 // must be target to source
                 processedEdges.push(edgeToPick.id);
                 processedVertices.push(edgeToPick.target);
                 currentNode = edgeToPick.source;
-                //cy.getElementById(currentNode).addClass('visited');
-                highlight(currentNode);
                 console.log('Taking edge ' + edgeToPick.id + 
                             ' from ' + edgeToPick.target + 
                             ' to ' + edgeToPick.source + 
@@ -338,11 +339,21 @@
             distanceTraveled += edgeToPick.weight;
 
             if (currentNode === endingNode) {
+                processedVertices.push(currentNode);
                 console.log('processed:', processedEdges);
-                console.log('Ending node:', currentNode, '| Distance Traveled:', distanceTraveled);
+                console.log('processedVertices:', processedVertices);
+                var endingDetails = 'Approximate Shortest Path Between: ' +
+                                    startingNode + 
+                                    ' & ' +
+                                    currentNode + 
+                                    ' &boxh; Distance Traveled: ' + 
+                                    distanceTraveled;
+                console.log(endingDetails);
+                document.getElementById('path-text').innerHTML = endingDetails;
                 break;
             }
         }
+        return { processedVertices, processedEdges };
     }
 
     var cy = cytoscape({
@@ -387,13 +398,26 @@
         }
     });
 
-    addColorWeights();
-
-    setTimeout(function() {
-        // look into changing colors of visited nodes
-        // and edges
-        nearestNeighborAlgorithm('a', 'd');
-    }, 1000);
+    function draw() {
+        var processed = nearestNeighborAlgorithm('a', 'd');
+        var keys = Object.keys(processed);
+        var vertices = processed[keys[0]];
+        var edges = processed[keys[1]];
+        // O(|E|) - this is kind of ugly because of javascript closures (sorry)
+        for (var i = 0; i < processed[keys[1]].length; i++) {
+            (function(x) {
+                highlight(vertices[x], x);
+                highlight(edges[x], x);
+            })(i);
+        }
+        var lastIndex = processed[keys[0]].length - 1;
+        // highlight ending node since |V| > |E|
+        highlight(vertices[lastIndex], lastIndex);
+        // we need to wait until all the elements are highlighted before we show the message
+        setTimeout(function() {
+            document.getElementById('path-text').className = '';
+        }, 1000 * (lastIndex + 1.1)); // 1.1 the extra .1 is for animation time
+    }
 
     //console.log(graph);
 
@@ -401,8 +425,11 @@
         name: 'random'
     });
 
+    addColorWeights();
     layout.run();
-
-    //cy.getElementById('b').style(visitedNode);
-
+    draw(); // draw nearest neighbor algo
 })();
+
+window.onload = function() {
+    document.getElementById('title').className = 'load';
+};
