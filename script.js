@@ -1,5 +1,5 @@
 /**
- * Idea(s):
+ * Idea:
  * We have to be able to select the two nodes we want to find the shortest path to.
  * Look into click events for cytoscape, there isn't too much material in the docs so
  * it looks like this will be somewhat easy to implement
@@ -13,6 +13,7 @@
  *  });
  *
  * ```
+ * Idea: Show / hide weights
  */
 (function() {
     var alphabet = [
@@ -365,6 +366,7 @@
                 style: {
                     //'background-color': '#666',
                     'background-color': '#3579DC',
+                    'color': '#ffffff',
                     // TODO styling for labels (both node & edge)
                     'text-halign': 'center',
                     'text-valign': 'center',
@@ -398,8 +400,12 @@
         }
     });
 
-    function draw() {
-        var processed = nearestNeighborAlgorithm('a', 'd');
+    /**
+     * @param callback - function that returns an object containing an array of edges and vertices to highlight
+     */
+    function draw(callback) {
+        //var processed = //nearestNeighborAlgorithm('a', 'd');
+        var processed = callback();
         var keys = Object.keys(processed);
         var vertices = processed[keys[0]];
         var edges = processed[keys[1]];
@@ -427,7 +433,10 @@
 
     addColorWeights();
     layout.run();
-    draw(); // draw nearest neighbor algo
+    // draw nearest neighbor algo
+    draw(function() {
+        return nearestNeighborAlgorithm('a', 'd');
+    });
 })();
 
 window.onload = function() {
