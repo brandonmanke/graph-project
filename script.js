@@ -79,74 +79,47 @@
         elements.push({ data: { id: 'd' } });
         elements.push({ data: { id: 'e' } });
         elements.push({ data: { id: 'f' } });
-        elements.push({
-            data: { 
-                id: 'ab',
-                source: 'a', 
-                target: 'b',
-                weight: 10
+        var nodes = [
+            { data: { id: 'a' } },
+            { data: { id: 'b' } },
+            { data: { id: 'c' } },
+            { data: { id: 'd' } },
+            { data: { id: 'e' } },
+            { data: { id: 'f' } }
+        ];
+        var count = 0;
+        while (count < nodes.length) {
+            for (var i = 0; i < nodes.length - 1; i++) {
+                if (count === i) {
+                    ++i;
+                }
+                var edge = {
+                    data: {
+                        id: nodes[count].data.id + nodes[i].data.id,
+                        source: nodes[count].data.id,
+                        target: nodes[i].data.id,
+                        weight: Math.floor(Math.random() * 100 + 1)
+                    }
+                };
+                var edgeName = edge.data.id;
+                var exists = false;
+                for (var j = 0; j < elements.length; j++) {
+                    if ((elements[j].data.id === edgeName) ||
+                        (elements[j].data.id === edgeName.split("").reverse().join(""))) {
+                            exists = true;
+                        }
+                } 
+                if (!exists) {
+                    elements.push(edge);
+                }
             }
-        });
-        elements.push({
-            data: { 
-                id: 'bc',
-                source: 'b', 
-                target: 'c',
-                weight: 24
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'af',
-                source: 'a', 
-                target: 'f',
-                weight: 5
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'ae',
-                source: 'a', 
-                target: 'e',
-                weight: 33
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'fe',
-                source: 'f', 
-                target: 'e',
-                weight: 14
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'cd',
-                source: 'c', 
-                target: 'd',
-                weight: 28
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'db',
-                source: 'd', 
-                target: 'b',
-                weight: 7
-            }
-        });
-        elements.push({
-            data: { 
-                id: 'df',
-                source: 'd', 
-                target: 'f',
-                weight: 9
-            }
-        });
+            count++;
+        }
         return elements;
     }
 
-    function generateRandomGraph() {
+    // 5, 2.5
+    function generateRandomGraph(minEdgeWeight, maxEdgeWeight) {
         var elements = [];
         var random = Math.floor((Math.random() * 10) + 2);
         for (var i = 0; i < random; i++) {
@@ -155,7 +128,12 @@
             });
         }
         // random number from |V| to 2|V|
-        var randomNumberOfEdges = Math.floor(Math.random() * (random * 4) + (random * 1.5));
+        if (minEdgeWeight > maxEdgeWeight) {
+            throw console.log('edgeweigh error');
+        }
+        var randomNumberOfEdges = Math.floor(Math.random() * 
+                                  (random * maxEdgeWeight) + 
+                                  (random * minEdgeWeight));
         var edgesAdded = 0;
         for (var i = 0; i < randomNumberOfEdges; i++) {
             // get a random node from the elements array and subtract 'i' because
@@ -210,8 +188,8 @@
         return elements;
     }
 
-    var graph = generateRandomGraph();
-    //var graph = generateExampleGraph();
+    //var graph = generateRandomGraph(2.5, 5);
+    var graph = generateExampleGraph();
 
     function getEdgesAndNodes(graph, edges, nodes) {
         for (var i = 0; i < graph.length; i++) {
@@ -287,6 +265,20 @@
         }, 1000 * index);
     }
 
+    function getNeighbors(currentNode, edges) {
+        var currentNeighbors = [];
+        for (var i = 0; i < edges.length; i++) {
+            if (edges[i].data.source === currentNode ||
+                edges[i].data.target === currentNode) {
+                currentNeighbors.push(edges[i]);
+            }
+        }
+        return currentNeighbors;
+    }
+
+    /**
+     * From point A to B
+     */
     function nearestNeighborAlgorithm(startingNode, endingNode) {
         var distanceTraveled = 0;
         var processedEdges = [];
@@ -297,16 +289,9 @@
         // seperate edges & nodes into organized arrays
         getEdgesAndNodes(graph, edges, nodes);
         var currentNode = startingNode;
-        //cy.getElementById(currentNode).addClass('visited');
         while ((currentNode !== endingNode) && currentNode) {
             console.log('\nCurrent node is ' + currentNode);
-            var currentNeighbors = [];
-            for (var i = 0; i < edges.length; i++) {
-                if (edges[i].data.source === currentNode ||
-                    edges[i].data.target === currentNode) {
-                    currentNeighbors.push(edges[i]);
-                }
-            }
+            var currentNeighbors = getNeighbors(currentNode, edges);
 
             filterVisited(currentNeighbors, processedVertices, processedVertices);
             var edgeToPick = pickShortestEdge(currentNeighbors);
@@ -436,46 +421,53 @@
     layout.run();
 
     var clicked = cy.collection();
+    var count = 0;
     cy.nodes().on("click", function() {
         if (clicked.length < 2) {
-            if (this !== clicked[0]) {
-                clicked = clicked.add(this);
-                //console.log(clicked[0].data());
-            }
+            clicked = clicked.add(this);
+            //count++;
+            //console.log(clicked.data());
             if (clicked.length === 2) {
                 // draw nearest neighbor algo
-                draw(function() {
-                    return nearestNeighborAlgorithm(clicked[0].data().id, 
-                                                    clicked[1].data().id);
-                });
+                if (clicked[0] !== clicked[1]) {
+                    draw(function() {
+                        return nearestNeighborAlgorithm(clicked[0].data().id, 
+                                                        clicked[1].data().id);
+                    });
+                    count = 0;
+                }
             }
+            /*if (count === 2 && clicked.length === 1) {
+                draw(function() {
+                    return nearestNeighborAlgorithm(clicked[0].data().id);
+                });
+                count = 0;
+            }*/
         } else {
             for (var i = 0; i < cy.$('.visited').length; i++) {
                 cy.$('.visited')[i].data().removeClass('.visited');
             }
-
         }
     });
-
-    window.onload = function() {
-        document.getElementById('title').className = 'load';
-        document.getElementById('settings').className += ' load';
-        //document.getElementById('x').className += ' load';
-        document.getElementById('description').className = 'load';
-        document.getElementById('cy').className = '';
-        document.getElementById('settings').addEventListener('click', function() {
-            var wrapper = document.getElementById('wrapper');
-            var menu = document.getElementById('slide-menu');
-            wrapper.className === '' 
-                ? wrapper.className = 'slide-over' 
-                : wrapper.className = '';
-            setTimeout(function() {
-                //cy.resize(); // jyes it does, for the cy canvas
-            }, 300);
-            menu.className === '' 
-                ? menu.className = 'menu-toggle' 
-                : menu.className = '';  
-        });
-    };
-    
 })();
+
+window.onload = function() {
+    document.getElementById('title').className = 'load';
+    document.getElementById('settings').className += ' load';
+    //document.getElementById('x').className += ' load';
+    document.getElementById('description').className = 'load';
+    document.getElementById('cy').className = '';
+    document.getElementById('settings').addEventListener('click', function() {
+        var wrapper = document.getElementById('wrapper');
+        var menu = document.getElementById('slide-menu');
+        wrapper.className === '' 
+            ? wrapper.className = 'slide-over' 
+            : wrapper.className = '';
+        setTimeout(function() {
+            //cy.resize(); // jyes it does, for the cy canvas
+        }, 300);
+        menu.className === '' 
+            ? menu.className = 'menu-toggle' 
+            : menu.className = '';  
+    });
+};
