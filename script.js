@@ -449,13 +449,33 @@
                                                     clicked[1].data().id);
                 });
             }
+        } else {
+            for (var i = 0; i < cy.$('.visited').length; i++) {
+                cy.$('.visited')[i].data().removeClass('.visited');
+            }
+
         }
     });
 
+    window.onload = function() {
+        document.getElementById('title').className = 'load';
+        document.getElementById('settings').className += ' load';
+        //document.getElementById('x').className += ' load';
+        document.getElementById('description').className = 'load';
+        document.getElementById('cy').className = '';
+        document.getElementById('settings').addEventListener('click', function() {
+            var wrapper = document.getElementById('wrapper');
+            var menu = document.getElementById('slide-menu');
+            wrapper.className === '' 
+                ? wrapper.className = 'slide-over' 
+                : wrapper.className = '';
+            setTimeout(function() {
+                //cy.resize(); // jyes it does, for the cy canvas
+            }, 300);
+            menu.className === '' 
+                ? menu.className = 'menu-toggle' 
+                : menu.className = '';  
+        });
+    };
     
 })();
-
-window.onload = function() {
-    document.getElementById('title').className = 'load';
-    document.getElementById('menu').className = 'load';
-};

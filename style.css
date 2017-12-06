@@ -1,6 +1,24 @@
 body {
     font-family: 'Raleway', sans-serif;
     height: 90vh;
+    background-color: #1f1f1f; /* maybe lighter grey idk */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#wrapper {
+    background-color: #fff;
+    position: relative;
+    width: 100%; 
+    height: 100vh;
+    transition: right 300ms ease;
+    right: 0;
+    border-radius: 0px;
+}
+
+#header {
+
 }
 
 h1 {
@@ -14,27 +32,64 @@ h1 {
     opacity: 1 !important;
 }
 
-#settings {
+.icon {
     opacity: 0;
     transition: opacity .5s ease-in;
     display: inline;
     height: 24px;
+    width: 24px;
     float: right;
     margin: 7px;
+    cursor: pointer;
 }
 
-#settings img {
+.icon img {
+    display: inherit;
     pointer-events: none;
+    user-select: none;
+    -moz-user-select: none;
 }
 
-#menu {
-    
+/* Slide menu animation */
+
+#slide-menu {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    right: -286px;
+    bottom: 0;
+    display: block;
+    float: right;
+    width: 100%;
+    max-width: 284px;
+    height: 100%;
+    transition: right 300ms ease; /* maybe change to css custom animation */
+    color: #fff;
+    background-color: #1f1f1f;
 }
+
+#wrapper.slide-over {
+    right: 280px;
+    border-radius: 7px;
+}
+
+#slide-menu.menu-toggle {
+    right: 0px;
+}
+
+/* Slide menu animation end */
 
 #cy {
     width: 100%;
     height: 90%;
     margin: 0 auto;
+}
+
+#description {
+    opacity: 0;
+    transition: opacity .5s ease-in;
+    text-align: center;
+    margin-bottom: 15px;
 }
 
 #path-text {
@@ -43,6 +98,6 @@ h1 {
     text-align: center;
 }
 
-.hide {
-    opacity: 0 !important;
+#path-text.hide {
+    opacity: 0;
 }

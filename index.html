@@ -9,17 +9,29 @@
     <script src="cytoscape.min.js"></script>
 </head>
 <body>
-    <div>
-        <h1 id="title">Graph Algorithm Visualization</h1>
-        <div id="settings">
-            <img alt="settings" src="img/settings.svg">
+    <div id="slide-menu">
+        <div>
+            foobar
         </div>
     </div>
-    <div id="menu">
-        
+    <div id="wrapper">
+        <div id="header">
+            <h1 id="title">Graph Algorithm Visualization</h1>
+            <div class="icon" id="settings">
+                <img alt="settings" src="img/settings.svg">
+            </div>
+            <div class="icon" id="x">
+                <img src="img/x.svg">
+            </div>
+        </div>
+        <div id="cy"></div>
+        <div id="footer">
+            <div id="description">
+                Click two nodes to find the approximate shortest path between them.
+            </div>
+            <div id="path-text" class="hide"></div>
+        </div>      
     </div>
-    <div id="cy"></div>
-    <div id="path-text" class="hide"></div>
     <script src="script.js"></script>
 </body>
 </html>
