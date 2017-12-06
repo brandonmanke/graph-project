@@ -343,6 +343,7 @@
                 processedVertices.push(currentNode);
                 console.log('processed:', processedEdges);
                 console.log('processedVertices:', processedVertices);
+                // maybe switch this
                 var endingDetails = 'Approximate Shortest Path Between: ' +
                                     startingNode + 
                                     ' & ' +
@@ -433,12 +434,28 @@
 
     addColorWeights();
     layout.run();
-    // draw nearest neighbor algo
-    draw(function() {
-        return nearestNeighborAlgorithm('a', 'd');
+
+    var clicked = cy.collection();
+    cy.nodes().on("click", function() {
+        if (clicked.length < 2) {
+            if (this !== clicked[0]) {
+                clicked = clicked.add(this);
+                //console.log(clicked[0].data());
+            }
+            if (clicked.length === 2) {
+                // draw nearest neighbor algo
+                draw(function() {
+                    return nearestNeighborAlgorithm(clicked[0].data().id, 
+                                                    clicked[1].data().id);
+                });
+            }
+        }
     });
+
+    
 })();
 
 window.onload = function() {
     document.getElementById('title').className = 'load';
+    document.getElementById('menu').className = 'load';
 };
