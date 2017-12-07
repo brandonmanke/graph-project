@@ -3,6 +3,8 @@
  * Idea: Show / hide weights
  */
 (function() {
+    /* empty instance of cy object */
+    var cy = {};
     var alphabet = [
         'a', 'b', 'c', 'd', 'e', 'f', 
         'g', 'h', 'i', 'j', 'k', 'l', 
@@ -330,48 +332,51 @@
         return { processedVertices, processedEdges };
     }
 
-    var cy = cytoscape({
-        container: document.getElementById('cy'), // container to render in
-        elements: graph,
-        style: [ // the stylesheet for the graph
-            {
-                selector: 'node',
-                style: {
-                    //'background-color': '#666',
-                    'background-color': '#3579DC',
-                    'color': '#ffffff',
-                    // TODO styling for labels (both node & edge)
-                    'text-halign': 'center',
-                    'text-valign': 'center',
-                    'label': 'data(id)'
+    function newInstance(_graph) { 
+        var cy = cytoscape({
+            container: document.getElementById('cy'), // container to render in
+            elements: _graph,
+            style: [ // the stylesheet for the graph
+                {
+                    selector: 'node',
+                    style: {
+                        //'background-color': '#666',
+                        'background-color': '#3579DC',
+                        'color': '#ffffff',
+                        // TODO styling for labels (both node & edge)
+                        'text-halign': 'center',
+                        'text-valign': 'center',
+                        'label': 'data(id)'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc',
+                        'target-arrow-shape': 'triangle',
+                        'label': 'data(weight)'
+                    }
+                },
+                {
+                    selector: '.visited',
+                    style: {
+                        'background-color': 'red',
+                        'line-color': 'red',
+                        'transition-property': 'background-color, line-color',
+                        'transition-delay': '1000ms',
+                        'transition-duration': '0.5s'
+                    }
                 }
-            },
-            {
-                selector: 'edge',
-                style: {
-                    'width': 3,
-                    'line-color': '#ccc',
-                    'target-arrow-color': '#ccc',
-                    'target-arrow-shape': 'triangle',
-                    'label': 'data(weight)'
-                }
-            },
-            {
-                selector: '.visited',
-                style: {
-                    'background-color': 'red',
-                    'line-color': 'red',
-                    'transition-property': 'background-color, line-color',
-                    'transition-delay': '1000ms',
-                    'transition-duration': '0.5s'
-                }
+            ],
+            layout: {
+                name: 'random',
+                rows: 1
             }
-        ],
-        layout: {
-            name: 'grid',
-            rows: 1
-        }
-    });
+        });
+        return cy;
+    }
 
     /**
      * @param callback - function that returns an object containing an array of edges and vertices to highlight
@@ -400,6 +405,8 @@
 
     //console.log(graph);
 
+    cy = newInstance(graph);
+
     var layout = cy.layout({
         name: 'random'
     });
@@ -407,53 +414,68 @@
     addColorWeights();
     layout.run();
 
-    var clicked = cy.collection();
-    var count = 0;
-    cy.nodes().on("click", function() {
-        if (clicked.length < 2) {
-            clicked = clicked.add(this);
-            //count++;
-            //console.log(clicked.data());
-            if (clicked.length === 2) {
-                // draw nearest neighbor algo
-                if (clicked[0] !== clicked[1]) {
-                    draw(function() {
-                        return nearestNeighborAlgorithm(clicked[0].data().id, 
-                                                        clicked[1].data().id);
-                    });
-                    count = 0;
+    function cyClickListeners() {
+        var clicked = cy.collection();
+        cy.nodes().on("click", function() {
+            if (clicked.length < 2) {
+                clicked = clicked.add(this);
+                if (clicked.length === 2) {
+                    // draw nearest neighbor algo
+                    if (clicked[0] !== clicked[1]) {
+                        draw(function() {
+                            return nearestNeighborAlgorithm(clicked[0].data().id, 
+                                                            clicked[1].data().id);
+                        });
+                    }
+                }
+            } else {
+                for (var i = 0; i < cy.$('.visited').length; i++) {
+                    cy.$('.visited')[i].data().removeClass('.visited');
                 }
             }
-            /*if (count === 2 && clicked.length === 1) {
-                draw(function() {
-                    return nearestNeighborAlgorithm(clicked[0].data().id);
-                });
-                count = 0;
-            }*/
-        } else {
-            for (var i = 0; i < cy.$('.visited').length; i++) {
-                cy.$('.visited')[i].data().removeClass('.visited');
-            }
-        }
-    });
+        });
+    }
+
+    cyClickListeners();
 
     document.getElementById('example').addEventListener('click', function() {
         graph = generateExampleGraph();
-        cy.elements = graph;
+        for (var i = 0; i < cy.$('.visited').length; i++) {
+            if (cy.$('.visited')[i].hasClass('visited')) {
+                cy.$('.visited')[i].removeClass('visited');
+            }
+        }
+        if (cy.$('.visited')[0]) {
+            cy.$('.visited')[0].removeClass('visited');
+        }
+        cy.destroy();
+        cy = newInstance(graph);
+        addColorWeights();
+        layout = cy.layout({
+            name: 'random'
+        });
+        cyClickListeners();
         layout.run();
     });
     document.getElementById('random').addEventListener('click', function() {
         graph = generateRandomGraph(2.5, 5);
-        cy.elements = graph;
         for (var i = 0; i < cy.$('.visited').length; i++) {
-            if (cy.$('.visited')[i].hasClass('.visited')) {
-                cy.$('.visited')[i].removeClass('.visited');
+            if (cy.$('.visited')[i].hasClass('visited')) {
+                cy.$('.visited')[i].removeClass('visited');
             }
         }
-        console.log(cy.$('.visited'));
+        if (cy.$('.visited')[0]) {
+            cy.$('.visited')[0].removeClass('visited');
+        }
+        cy.destroy();
+        cy = newInstance(graph);
+        addColorWeights();
+        layout = cy.layout({
+            name: 'random'
+        });
+        cyClickListeners();
         layout.run();
     });
-
 })();
 
 window.onload = function() {
