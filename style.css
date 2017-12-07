@@ -12,13 +12,13 @@ body {
     position: relative;
     width: 100%; 
     height: 100vh;
-    transition: right 300ms ease;
+    transition: all 300ms ease;
     right: 0;
     border-radius: 0px;
 }
 
 #header {
-
+    
 }
 
 h1 {
