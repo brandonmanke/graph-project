@@ -78,21 +78,28 @@ h1 {
 }
 
 .list li {
-    width: 154px;
+    width: 100%;
     margin: 0 auto;
 }
 
 .button {
     color: #1f1f1f;
     background-color: #fff;
-    width: 120px;
     height: 25px;
     border-radius: 5px;
-    margin: 20px;
+    margin: 15px 70px;
+    cursor: pointer;
+    padding: 4px;
+    transition: all 300ms ease;
 }
 
 .button p {
     margin-top: 3px;
+}
+
+.button:hover {
+    background-color: #303030;
+    color: #fff;
 }
 
 .input input {
