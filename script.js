@@ -476,6 +476,16 @@
         cyClickListeners();
         layout.run();
     });
+    document.getElementById('find-path').addEventListener('click', function() {
+        var vertex1 = document.getElementById('1st-v').value;
+        var vertex2 = document.getElementById('2nd-v').value;
+        if (vertex1.toLowerCase() !== vertex2.toLowerCase()) {
+            draw(function() {
+                return nearestNeighborAlgorithm(vertex1.toLowerCase(), 
+                                                vertex2.toLowerCase());
+            });
+        }
+    })
 })();
 
 window.onload = function() {

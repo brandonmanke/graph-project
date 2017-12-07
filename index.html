@@ -30,13 +30,18 @@
                         <p>Edge Weights: </p>
                         <div>
                             <p>Min: </p>
-                            <input type="text" name="min weight" id="min-w">
+                            <input type="text" name="min weight" maxlength="3" id="min-w">
                         </div>
                         <br>
                         <div>
                             <p>Max: </p>
-                            <input type="text" name="max weight" id="max-w">
+                            <input type="text" name="max weight" maxlength="3" id="max-w">
                         </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button" id="generate">
+                        <p>Generate</p>
                     </div>
                 </li>
                 <div class="bar"></div>
@@ -45,13 +50,18 @@
                         <p>Path Input: </p>
                         <div>
                             <p>1st Vertex: </p>
-                            <input type="text" name="1st vertex" id="2nd-v">
+                            <input type="text" name="1st vertex" maxlength="1" id="1st-v">
                         </div>
                         <br>
                         <div>
                             <p>2nd Vertex: </p>
-                            <input type="text" name="1st vertex" id="1st-v">
+                            <input type="text" name="2nd vertex" maxlength="1" id="2nd-v">
                         </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button" id="find-path">
+                        <p>Find Path</p>
                     </div>
                 </li>
             </ul>
