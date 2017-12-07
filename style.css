@@ -68,6 +68,44 @@ h1 {
     background-color: #1f1f1f;
 }
 
+#slide-menu h2 {
+    font-weight: 400;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+}
+
+.list li {
+    width: 154px;
+    margin: 0 auto;
+}
+
+.button {
+    color: #1f1f1f;
+    background-color: #fff;
+    width: 120px;
+    height: 25px;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.button p {
+    margin-top: 3px;
+}
+
+.input input {
+    margin-left: 5px;
+    border: none;
+    width: 30px;
+    border-radius: 3px;
+}
+
+.input div * {
+    display: inline;
+}
+
 #wrapper.slide-over {
     right: 280px;
     border-radius: 7px;
