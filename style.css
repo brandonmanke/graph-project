@@ -18,7 +18,7 @@ body {
 }
 
 #header {
-    
+    margin-left: 10px;
 }
 
 h1 {
@@ -104,6 +104,14 @@ h1 {
 
 .input div * {
     display: inline;
+}
+
+.bar {
+    background-color: #3c3c3c;
+    width: 200px;
+    height: 2px;
+    margin: 20px auto;
+    border-radius: 3px;
 }
 
 #wrapper.slide-over {
