@@ -1,18 +1,5 @@
 /**
- * Idea:
- * We have to be able to select the two nodes we want to find the shortest path to.
- * Look into click events for cytoscape, there isn't too much material in the docs so
- * it looks like this will be somewhat easy to implement
- * Quick example of adding clicked cytoscape elements to a collection
- *  Keep a collection of nodes that have been clicked:
- * ```
- *
- *  var collection = cy.collection();
- *  cy.nodes().on("click", function(){
- *    collection = collection.add(this);
- *  });
- *
- * ```
+ * @author Brandon Manke
  * Idea: Show / hide weights
  */
 (function() {
@@ -449,6 +436,24 @@
             }
         }
     });
+
+    document.getElementById('example').addEventListener('click', function() {
+        graph = generateExampleGraph();
+        cy.elements = graph;
+        layout.run();
+    });
+    document.getElementById('random').addEventListener('click', function() {
+        graph = generateRandomGraph(2.5, 5);
+        cy.elements = graph;
+        for (var i = 0; i < cy.$('.visited').length; i++) {
+            if (cy.$('.visited')[i].hasClass('.visited')) {
+                cy.$('.visited')[i].removeClass('.visited');
+            }
+        }
+        console.log(cy.$('.visited'));
+        layout.run();
+    });
+
 })();
 
 window.onload = function() {
