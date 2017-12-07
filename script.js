@@ -459,14 +459,6 @@
     });
     document.getElementById('random').addEventListener('click', function() {
         graph = generateRandomGraph(2.5, 5);
-        for (var i = 0; i < cy.$('.visited').length; i++) {
-            if (cy.$('.visited')[i].hasClass('visited')) {
-                cy.$('.visited')[i].removeClass('visited');
-            }
-        }
-        if (cy.$('.visited')[0]) {
-            cy.$('.visited')[0].removeClass('visited');
-        }
         cy.destroy();
         cy = newInstance(graph);
         addColorWeights();
@@ -485,7 +477,26 @@
                                                 vertex2.toLowerCase());
             });
         }
-    })
+    });
+    document.getElementById('generate').addEventListener('click', function() {
+        var minWeight = document.getElementById('min-w').value;
+        var maxWeight = document.getElementById('max-w').value;
+        if (minWeight && maxWeight) {
+            minWeight = parseFloat(minWeight);
+            maxWeight = parseFloat(maxWeight);
+        }
+        if (minWeight < maxWeight && (minWeight > 0) && (maxWeight > 0) ) {
+            graph = generateRandomGraph(minWeight, maxWeight);
+            cy.destroy();
+            cy = newInstance(graph);
+            addColorWeights();
+            layout = cy.layout({
+                name: 'random'
+            });
+            cyClickListeners();
+            layout.run();
+        }
+    });
 })();
 
 window.onload = function() {
