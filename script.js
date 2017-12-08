@@ -398,7 +398,7 @@
                 }
             ],
             layout: {
-                name: 'random',
+                name: 'grid',
                 rows: 1
             }
         });
@@ -465,6 +465,7 @@
 
     cyClickListeners();
 
+    // menu click listeners
     document.getElementById('example').addEventListener('click', function() {
         var numberOfEdges = 80;
         var inputNumOfNodes = document.getElementById('n-edges').value;
@@ -528,6 +529,18 @@
             cyClickListeners();
             layout.run();
         }
+    });
+    var _name = 'random';
+    document.getElementById('layout').addEventListener('click', function() {
+        if (_name === 'circle') {
+            _name = 'random'
+        } else {
+            _name = 'circle';
+        }
+        layout = cy.layout({
+            name: _name
+        });
+        layout.run();
     });
 })();
 
