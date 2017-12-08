@@ -204,8 +204,8 @@
         return elements;
     }
 
-    //var graph = generateRandomGraph(2.5, 5);
-    var graph = generateExampleGraph(80);
+    var graph = generateRandomGraph(2.5, 5);
+    //var graph = generateExampleGraph(80);
 
     function getEdgesAndNodes(graph, edges, nodes) {
         for (var i = 0; i < graph.length; i++) {
