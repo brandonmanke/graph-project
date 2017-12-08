@@ -59,8 +59,8 @@
         }
     }
 
-    // ugly way of doing this
-    function generateExampleGraph() {
+    // ugly way of doing this, sorry
+    function generateExampleGraph(numberOfEdges) {
         var elements = [];
         elements.push({ data: { id: 'a' } });
         elements.push({ data: { id: 'b' } });
@@ -68,63 +68,71 @@
         elements.push({ data: { id: 'd' } });
         elements.push({ data: { id: 'e' } });
         elements.push({ data: { id: 'f' } });
+        elements.push({ data: { id: 'g' } });
+        elements.push({ data: { id: 'h' } });
+        elements.push({ data: { id: 'i' } });
+        elements.push({ data: { id: 'j' } });
+        elements.push({ data: { id: 'k' } });
+        elements.push({ data: { id: 'l' } });
+        elements.push({ data: { id: 'm' } });
+        elements.push({ data: { id: 'n' } });
+        elements.push({ data: { id: 'o' } });
+        elements.push({ data: { id: 'p' } });
+        elements.push({ data: { id: 'q' } });
+        elements.push({ data: { id: 'r' } });
+        elements.push({ data: { id: 's' } });
+        elements.push({ data: { id: 't' } });
+        elements.push({ data: { id: 'u' } });
+        elements.push({ data: { id: 'v' } });
+        elements.push({ data: { id: 'w' } });
+        elements.push({ data: { id: 'x' } });
+        elements.push({ data: { id: 'y' } });
+        elements.push({ data: { id: 'z' } });
+        elements.push({ data: { id: 'a1' } });
+        elements.push({ data: { id: 'b2' } });
+        elements.push({ data: { id: 'c3' } });
+        elements.push({ data: { id: 'd4' } });
         var nodes = [
             { data: { id: 'a' } },
             { data: { id: 'b' } },
             { data: { id: 'c' } },
             { data: { id: 'd' } },
             { data: { id: 'e' } },
-            { data: { id: 'f' } }
+            { data: { id: 'f' } },
+            { data: { id: 'g' } },
+            { data: { id: 'h' } },
+            { data: { id: 'i' } },
+            { data: { id: 'j' } },
+            { data: { id: 'k' } },
+            { data: { id: 'l' } },
+            { data: { id: 'm' } },
+            { data: { id: 'n' } },
+            { data: { id: 'o' } },
+            { data: { id: 'p' } },
+            { data: { id: 'q' } },
+            { data: { id: 'r' } },
+            { data: { id: 's' } },
+            { data: { id: 't' } },
+            { data: { id: 'u' } },
+            { data: { id: 'v' } },
+            { data: { id: 'w' } },
+            { data: { id: 'x' } },
+            { data: { id: 'y' } },
+            { data: { id: 'z' } },
+            { data: { id: 'a1' } },
+            { data: { id: 'b2' } },
+            { data: { id: 'c3' } },
+            { data: { id: 'd4' } }
         ];
-        var count = 0;
-        while (count < nodes.length) {
-            for (var i = 0; i < nodes.length - 1; i++) {
-                if (count === i) {
-                    ++i;
-                }
-                var edge = {
-                    data: {
-                        id: nodes[count].data.id + nodes[i].data.id,
-                        source: nodes[count].data.id,
-                        target: nodes[i].data.id,
-                        weight: Math.floor(Math.random() * 100 + 1)
-                    }
-                };
-                var edgeName = edge.data.id;
-                var exists = false;
-                for (var j = 0; j < elements.length; j++) {
-                    if ((elements[j].data.id === edgeName) ||
-                        (elements[j].data.id === edgeName.split("").reverse().join(""))) {
-                            exists = true;
-                        }
-                } 
-                if (!exists) {
-                    elements.push(edge);
-                }
-            }
-            count++;
+        if (numberOfEdges > 0) {
+            createEdges(numberOfEdges, elements);
         }
         return elements;
     }
 
-    // 5, 2.5
-    function generateRandomGraph(minEdgeWeight, maxEdgeWeight) {
-        var elements = [];
-        var random = Math.floor((Math.random() * 10) + 2);
-        for (var i = 0; i < random; i++) {
-            elements.push({
-                data: { id: alphabet[i] }
-            });
-        }
-        // random number from |V| to 2|V|
-        if (minEdgeWeight > maxEdgeWeight) {
-            throw console.log('edgeweigh error');
-        }
-        var randomNumberOfEdges = Math.floor(Math.random() * 
-                                  (random * maxEdgeWeight) + 
-                                  (random * minEdgeWeight));
+    function createEdges(numberOfEdges, elements) {
         var edgesAdded = 0;
-        for (var i = 0; i < randomNumberOfEdges; i++) {
+        for (var i = 0; i < numberOfEdges; i++) {
             // get a random node from the elements array and subtract 'i' because
             // that's the number of edges that have already been added to the array
             // we know that all the edges added are at the end of the elements array
@@ -174,11 +182,30 @@
                 });
             }
         }
+    }
+
+    // 5, 2.5
+    function generateRandomGraph(minEdgeWeight, maxEdgeWeight) {
+        var elements = [];
+        var random = Math.floor((Math.random() * 10) + 2);
+        for (var i = 0; i < random; i++) {
+            elements.push({
+                data: { id: alphabet[i] }
+            });
+        }
+        // random number from |V| to 2|V|
+        if (minEdgeWeight > maxEdgeWeight) {
+            throw console.log('edgeweigh error');
+        }
+        var randomNumberOfEdges = Math.floor(Math.random() * 
+                                  (random * maxEdgeWeight) + 
+                                  (random * minEdgeWeight));
+        createEdges(randomNumberOfEdges, elements);
         return elements;
     }
 
     //var graph = generateRandomGraph(2.5, 5);
-    var graph = generateExampleGraph();
+    var graph = generateExampleGraph(80);
 
     function getEdgesAndNodes(graph, edges, nodes) {
         for (var i = 0; i < graph.length; i++) {
@@ -439,7 +466,12 @@
     cyClickListeners();
 
     document.getElementById('example').addEventListener('click', function() {
-        graph = generateExampleGraph();
+        var numberOfEdges = 80;
+        var inputNumOfNodes = document.getElementById('n-edges').value;
+        if (inputNumOfNodes) {
+            numberOfEdges = inputNumOfNodes;
+        }
+        graph = generateExampleGraph(numberOfEdges);
         for (var i = 0; i < cy.$('.visited').length; i++) {
             if (cy.$('.visited')[i].hasClass('visited')) {
                 cy.$('.visited')[i].removeClass('visited');
