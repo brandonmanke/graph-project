@@ -59,77 +59,6 @@
         }
     }
 
-    // ugly way of doing this, sorry
-    function generateExampleGraph(numberOfEdges) {
-        var elements = [];
-        elements.push({ data: { id: 'a' } });
-        elements.push({ data: { id: 'b' } });
-        elements.push({ data: { id: 'c' } });
-        elements.push({ data: { id: 'd' } });
-        elements.push({ data: { id: 'e' } });
-        elements.push({ data: { id: 'f' } });
-        elements.push({ data: { id: 'g' } });
-        elements.push({ data: { id: 'h' } });
-        elements.push({ data: { id: 'i' } });
-        elements.push({ data: { id: 'j' } });
-        elements.push({ data: { id: 'k' } });
-        elements.push({ data: { id: 'l' } });
-        elements.push({ data: { id: 'm' } });
-        elements.push({ data: { id: 'n' } });
-        elements.push({ data: { id: 'o' } });
-        elements.push({ data: { id: 'p' } });
-        elements.push({ data: { id: 'q' } });
-        elements.push({ data: { id: 'r' } });
-        elements.push({ data: { id: 's' } });
-        elements.push({ data: { id: 't' } });
-        elements.push({ data: { id: 'u' } });
-        elements.push({ data: { id: 'v' } });
-        elements.push({ data: { id: 'w' } });
-        elements.push({ data: { id: 'x' } });
-        elements.push({ data: { id: 'y' } });
-        elements.push({ data: { id: 'z' } });
-        elements.push({ data: { id: 'a1' } });
-        elements.push({ data: { id: 'b2' } });
-        elements.push({ data: { id: 'c3' } });
-        elements.push({ data: { id: 'd4' } });
-        var nodes = [
-            { data: { id: 'a' } },
-            { data: { id: 'b' } },
-            { data: { id: 'c' } },
-            { data: { id: 'd' } },
-            { data: { id: 'e' } },
-            { data: { id: 'f' } },
-            { data: { id: 'g' } },
-            { data: { id: 'h' } },
-            { data: { id: 'i' } },
-            { data: { id: 'j' } },
-            { data: { id: 'k' } },
-            { data: { id: 'l' } },
-            { data: { id: 'm' } },
-            { data: { id: 'n' } },
-            { data: { id: 'o' } },
-            { data: { id: 'p' } },
-            { data: { id: 'q' } },
-            { data: { id: 'r' } },
-            { data: { id: 's' } },
-            { data: { id: 't' } },
-            { data: { id: 'u' } },
-            { data: { id: 'v' } },
-            { data: { id: 'w' } },
-            { data: { id: 'x' } },
-            { data: { id: 'y' } },
-            { data: { id: 'z' } },
-            { data: { id: 'a1' } },
-            { data: { id: 'b2' } },
-            { data: { id: 'c3' } },
-            { data: { id: 'd4' } }
-        ];
-        if (numberOfEdges > 0) {
-            createEdges(numberOfEdges, elements);
-        }
-        return elements;
-    }
-
     function createEdges(numberOfEdges, elements) {
         var edgesAdded = 0;
         for (var i = 0; i < numberOfEdges; i++) {
@@ -205,7 +134,6 @@
     }
 
     var graph = generateRandomGraph(2.5, 5);
-    //var graph = generateExampleGraph(80);
 
     function getEdgesAndNodes(graph, edges, nodes) {
         for (var i = 0; i < graph.length; i++) {
@@ -465,31 +393,6 @@
 
     cyClickListeners();
 
-    // menu click listeners
-    document.getElementById('example').addEventListener('click', function() {
-        var numberOfEdges = 80;
-        var inputNumOfNodes = document.getElementById('n-edges').value;
-        if (inputNumOfNodes) {
-            numberOfEdges = inputNumOfNodes;
-        }
-        graph = generateExampleGraph(numberOfEdges);
-        for (var i = 0; i < cy.$('.visited').length; i++) {
-            if (cy.$('.visited')[i].hasClass('visited')) {
-                cy.$('.visited')[i].removeClass('visited');
-            }
-        }
-        if (cy.$('.visited')[0]) {
-            cy.$('.visited')[0].removeClass('visited');
-        }
-        cy.destroy();
-        cy = newInstance(graph);
-        addColorWeights();
-        layout = cy.layout({
-            name: 'random'
-        });
-        cyClickListeners();
-        layout.run();
-    });
     document.getElementById('random').addEventListener('click', function() {
         graph = generateRandomGraph(2.5, 5);
         cy.destroy();
@@ -501,6 +404,7 @@
         cyClickListeners();
         layout.run();
     });
+
     document.getElementById('find-path').addEventListener('click', function() {
         var vertex1 = document.getElementById('1st-v').value;
         var vertex2 = document.getElementById('2nd-v').value;
@@ -511,6 +415,7 @@
             });
         }
     });
+
     document.getElementById('generate').addEventListener('click', function() {
         var minWeight = document.getElementById('min-w').value;
         var maxWeight = document.getElementById('max-w').value;
@@ -530,6 +435,7 @@
             layout.run();
         }
     });
+    
     var _name = 'random';
     document.getElementById('layout').addEventListener('click', function() {
         if (_name === 'circle') {
